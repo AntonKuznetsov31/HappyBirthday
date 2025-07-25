@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  HappyBirthday
+
+  Created by Anton Kuznetsov on 26.07.2025.
+  
+*/
+
+// - Details screen: -
+"app_title" = "Happy Birthday!";
+"textfield_placeholder" = "Enter name";
+"birthday" = "Birthday";
+"show_birthday_screen" = "Show birthday screen";
