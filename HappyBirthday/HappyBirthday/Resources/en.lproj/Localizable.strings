@@ -11,3 +11,16 @@
 "textfield_placeholder" = "Enter name";
 "birthday" = "Birthday";
 "show_birthday_screen" = "Show birthday screen";
+
+// errors messages
+"name_error_empty" = "Name is required.";
+"name_error_parts" = "Enter both first and last name.";
+"name_error_too_short" = "Each part must be at least 2 letters.";
+"name_error_invalid_chars" = "Only letters are allowed (no digits or symbols).";
+"birthday_error_future" = "Birthday cannot be in the future.";
+"birthday_error_too_old" = "Child must be under 5 years old.";
+
+// camera
+"choose_photo_source" = "Choose Photo Source";
+"camera_title" = "Camera";
+"photo_library_title" = "Photo Library";

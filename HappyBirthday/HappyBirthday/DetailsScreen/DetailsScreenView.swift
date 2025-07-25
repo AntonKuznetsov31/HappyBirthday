@@ -9,13 +9,14 @@ import SwiftUI
 import SwiftData
 
 struct DetailsScreenContainer: View {
-    
     @Environment(\.modelContext) private var context
-
+    @State private var theme: AppColorTheme = .random()
+    
     var body: some View {
         Group {
             let profile = fetchOrCreateProfile()
             DetailsScreenView(viewModel: DetailsViewModel(profile: profile))
+                .environment(\.birthdayTheme, theme)
         }
     }
     
@@ -31,6 +32,7 @@ struct DetailsScreenContainer: View {
 }
 
 struct DetailsScreenView: View {
+    @Environment(\.birthdayTheme) private var theme
     @Bindable var viewModel: DetailsViewModel
     @State private var isShowingBirthdayScreen = false
     
@@ -43,10 +45,14 @@ struct DetailsScreenView: View {
                 title
                 nameField
                 birthdayField
+                photoView
                 Spacer()
                 showButton
             }
             .padding()
+            .navigationDestination(isPresented: $isShowingBirthdayScreen) {
+                // TODO: - Navigation
+            }
         }
     }
     
@@ -60,15 +66,27 @@ struct DetailsScreenView: View {
         VStack(alignment: .leading, spacing: 4) {
             TextField("textfield_placeholder".localized, text: viewModel.nameBinding)
                 .textFieldStyle(.roundedBorder)
-
+            if let error = viewModel.nameValidationErrorDescription {
+                Text(error)
+                    .font(.caption)
+                    .foregroundColor(.red)
+            } else {
+                Text(" ").font(.caption)
+            }
         }
     }
     
     private var birthdayField: some View {
         VStack(alignment: .leading, spacing: 4) {
             DatePicker("birthday".localized, selection: viewModel.birthdayBinding, displayedComponents: .date)
-                .tint(Color("primaryColor"))
-
+                .tint(Color("primary_button_color"))
+            if let error = viewModel.birthdayErrorMessage {
+                Text(error)
+                    .font(.caption)
+                    .foregroundColor(.red)
+            } else {
+                Text(" ").font(.caption)
+            }
         }
     }
     
@@ -80,10 +98,16 @@ struct DetailsScreenView: View {
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .frame(height: 42)
+                .background(viewModel.isFormValid ? Color("primary_button_color") : Color.gray.opacity(0.3))
                 .foregroundColor(.white)
                 .cornerRadius(42)
         }
+        .disabled(!viewModel.isFormValid)
         .padding(.horizontal)
         .padding(.bottom, 53)
+    }
+    
+    private var photoView: some View {
+        PhotoPickerView(image: viewModel.imageBinding, isIconHidden: false)
     }
 }
