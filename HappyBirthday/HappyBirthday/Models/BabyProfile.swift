@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+/// Main baby profile model
 @Model
 class BabyProfile {
     var id: UUID

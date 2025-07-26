@@ -12,6 +12,7 @@ import SwiftData
 final class DetailsScreenViewModel: ObservableObject {
     var profile: BabyProfile
     
+    /// Callback triggered when user taps "Show birthday screen".
     var onShowBirthdayScreenTapped: () -> Void = {}
 
     init(profile: BabyProfile) {
@@ -20,6 +21,7 @@ final class DetailsScreenViewModel: ObservableObject {
 
     // MARK: - Bindings
 
+    /// Binding to the baby's full name, used by a TextField.
     var nameBinding: Binding<String> {
         Binding(
             get: { self.profile.fullName },
@@ -27,6 +29,7 @@ final class DetailsScreenViewModel: ObservableObject {
         )
     }
 
+    /// Binding to the baby's birthday date, used by a DatePicker.
     var birthdayBinding: Binding<Date> {
         Binding(
             get: { self.profile.birthday },
@@ -34,6 +37,7 @@ final class DetailsScreenViewModel: ObservableObject {
         )
     }
 
+    /// Binding to the baby's photo, used by a photo picker.
     var imageBinding: Binding<UIImage?> {
         Binding(
             get: {
@@ -54,15 +58,17 @@ final class DetailsScreenViewModel: ObservableObject {
 
     // MARK: - Validation
 
-    // Name
+    /// Indicates whether the name is valid.
     var isNameValid: Bool {
         nameValidationError == nil
     }
     
+    /// Localized error description for name field (used in UI).
     var nameValidationErrorDescription: String? {
         nameValidationError?.errorDescription
     }
     
+    /// Validates the full name: must contain two parts, no digits/symbols, minimum 2 letters each.
     var nameValidationError: NameValidationError? {
         let trimmed = profile.fullName.trimmingCharacters(in: .whitespacesAndNewlines)
         let parts = trimmed.components(separatedBy: .whitespaces).filter { !$0.isEmpty }
@@ -94,23 +100,24 @@ final class DetailsScreenViewModel: ObservableObject {
         return nil
     }
 
-    // Birthday
+    /// Indicates whether the birthday is valid.
     var isBirthdayValid: Bool {
         birthdayErrorMessage == nil
     }
     
+    /// Localized error message for invalid birthday (used in UI).
     var birthdayErrorMessage: String? {
         let date = profile.birthday
         let now = Date()
 
-        // no future dates
+        // No future dates allowed
         if date > now {
             return "birthday_error_future".localized
         }
 
         let calendar = Calendar.current
         
-        // should be under 5 years old
+        // Child must be under 5 years old
         if let age = calendar.dateComponents([.year], from: date, to: now).year {
             if age > 5 {
                 return "birthday_error_too_old".localized
@@ -120,7 +127,7 @@ final class DetailsScreenViewModel: ObservableObject {
         return nil
     }
 
-    // Form
+    /// Returns whether the entire form is valid.
     var isFormValid: Bool {
         isNameValid && isBirthdayValid
     }

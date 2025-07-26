@@ -8,6 +8,9 @@
 import SwiftUI
 import SwiftData
 
+/// The main entry point of the app after launch.
+/// It loads the user's profile and shows either the `DetailsScreenView`
+/// or a `ProgressView` while loading data.
 struct AppEntryPoint: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var appViewModel: AppViewModel
@@ -15,6 +18,7 @@ struct AppEntryPoint: View {
     
     var body: some View {
         Group {
+            // Once the profile is loaded, show the main navigation stack
             if let profile = appViewModel.profile {
                 NavigationStack(path: $coordinator.path) {
                     DetailsScreenView(viewModel: DetailsScreenViewModel(profile: profile))
@@ -27,10 +31,12 @@ struct AppEntryPoint: View {
                         }
                 }
             } else {
+                // While loading the profile, show progress indicator
                 ProgressView()
             }
         }
         .task {
+            // Load or create the user's profile from SwiftData
             await appViewModel.start(context: modelContext)
         }
     }

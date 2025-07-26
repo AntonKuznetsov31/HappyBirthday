@@ -8,9 +8,17 @@
 import SwiftUI
 import UIKit
 
+/// A SwiftUI wrapper for UIKit's `UIImagePickerController`,
+/// allowing the user to pick an image from the camera or photo library.
 struct ImagePicker: UIViewControllerRepresentable {
+    
+    /// The source type: `.camera` or `.photoLibrary`
     let sourceType: UIImagePickerController.SourceType
+    
+    /// Callback when the user picks an image
     let onImagePicked: (UIImage) -> Void
+    
+    /// Used to dismiss the picker view
     @Environment(\.dismiss) private var dismiss
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
@@ -26,6 +34,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         Coordinator(self)
     }
 
+    /// Coordinator acts as delegate for `UIImagePickerController`
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let parent: ImagePicker
 

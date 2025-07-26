@@ -8,13 +8,15 @@
 import SwiftUI
 import SwiftData
 
+/// The root screen where the user enters baby’s details (name, birthday, and photo).
+/// Once valid input is provided, user can proceed to the next birthday screen.
 struct DetailsScreenView: View {
     @EnvironmentObject private var coordinator: NavigationCoordinator
     @Environment(\.birthdayTheme) private var theme
     @ObservedObject var viewModel: DetailsScreenViewModel
     
     @State private var imageToShare: UIImage?
-        @State private var isSharing = false
+    @State private var isSharing = false
     
     var body: some View {
         NavigationStack {
@@ -30,12 +32,14 @@ struct DetailsScreenView: View {
         }
     }
     
+    /// Title shown at the top of the screen
     private var title: some View {
         Text("app_title".localized)
             .font(.title)
             .bold()
     }
     
+    /// Input field for the baby's full name, including inline validation
     private var nameField: some View {
         VStack(alignment: .leading, spacing: 4) {
             TextField("textfield_placeholder".localized, text: viewModel.nameBinding)
@@ -50,6 +54,7 @@ struct DetailsScreenView: View {
         }
     }
     
+    /// Input field for selecting the baby's birthday, with validation
     private var birthdayField: some View {
         VStack(alignment: .leading, spacing: 4) {
             DatePicker("birthday".localized, selection: viewModel.birthdayBinding, displayedComponents: .date)
@@ -64,6 +69,7 @@ struct DetailsScreenView: View {
         }
     }
     
+    /// Button that becomes active when form is valid; navigates to the birthday screen
     private var showButton: some View {
         Button {
             coordinator.push(.birthday(id: viewModel.profile.id))
@@ -81,6 +87,7 @@ struct DetailsScreenView: View {
         .padding(.bottom, 53)
     }
     
+    /// View that allows the user to pick a photo for the baby's profile
     private var photoView: some View {
         PhotoPickerView(image: viewModel.imageBinding, isIconHidden: false)
     }

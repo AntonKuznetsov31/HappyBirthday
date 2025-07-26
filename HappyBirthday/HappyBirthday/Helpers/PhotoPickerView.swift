@@ -16,25 +16,43 @@ enum ImagePickerSource: Identifiable {
 }
 
 struct PhotoPickerView: View {
+    
+    /// Binding to the selected image.
     @Binding var image: UIImage?
+    
+    /// Currently selected image picker source (camera or library).
     @State private var pickerSource: ImagePickerSource?
+    
+    /// Flag to control visibility of the source selection menu.
     @State private var showSourceMenu = false
+    
+    /// Whether the camera icon should be hidden (for sharing)
     let isIconHidden: Bool
     
     @Environment(\.birthdayTheme) private var theme
     
+    // MARK: - Constants
     private let iconSize: CGFloat = 36
     private let borderWidth: CGFloat = 7
-    let diameterRatio: CGFloat = 0.5
     
+    /// Ratio of the diameter of the avatar to the screen width.
+    private let diameterRatio: CGFloat = 0.5
+    
+    /// Diameter of the avatar circle.
     private var diameter: CGFloat {
         UIScreen.main.bounds.width * diameterRatio
     }
     
+    /// Radius of the avatar circle.
     private var radius: CGFloat { diameter / 2 }
+    
+    /// Radius of the camera icon circle.
     private var iconRadius: CGFloat { iconSize / 2 }
+    
+    /// Distance from the center of the avatar to the icon center (placed diagonally).
     private var diagonalOffset: CGFloat { radius * cos(.pi / 4) }
     
+    /// Final offset for the camera icon (placed on top-right edge of the avatar).
     private var iconOffset: CGSize {
         let offset = radius + iconSize / 2
         let dx = offset * cos(.pi / 4)
@@ -77,6 +95,8 @@ struct PhotoPickerView: View {
             }
         }
         .frame(width: diameter, height: diameter)
+        
+        // Source Selection & Sheet
         .confirmationDialog("choose_photo_source".localized, isPresented: $showSourceMenu, titleVisibility: .visible) {
             Button("camera_title".localized) {
                 pickerSource = .camera
