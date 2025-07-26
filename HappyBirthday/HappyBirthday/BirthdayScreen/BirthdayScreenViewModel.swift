@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 final class BirthdayScreenViewModel: ObservableObject {
     
-    var profile: BabyProfile
+    let profile: BabyProfile
     
     /// Age display calculated from birthday, shown as text and image
     @Published var ageDisplay: BabyAgeDisplay

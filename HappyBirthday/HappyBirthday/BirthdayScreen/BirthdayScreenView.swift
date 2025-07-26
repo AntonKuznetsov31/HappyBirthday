@@ -81,7 +81,9 @@ struct BirthdayScreenView: View {
                         .padding(.bottom, 15)
                     logoView
                         .padding(.bottom, 53)
-                    shareButton
+                    if !isItToShare {
+                        shareButton
+                    }
                 }
             }
             .frame(maxHeight: .infinity)
@@ -176,21 +178,27 @@ struct BirthdayScreenView: View {
     
     /// Sharin screen content button
     private var shareButton: some View {
-        ShareLink(
-            item: Image(uiImage: image ?? UIImage()),
-            preview: SharePreview(Text("Shared image"), image: Image(uiImage: image ?? UIImage()))
-        ) {
-            HStack {
-                Text("share_button_title".localized)
-                Image("share_button_icon")
+        Group {
+            if let image = image {
+                ShareLink(
+                    item: Image(uiImage: image),
+                    preview: SharePreview(Text("Shared image"), image: Image(uiImage: image))
+                ) {
+                    HStack {
+                        Text("share_button_title".localized)
+                        Image("share_button_icon")
                             .font(.system(size: 16))
+                    }
+                    .fontWeight(.semibold)
+                    .frame(width: 180)
+                    .frame(height: 42)
+                    .background(Color("primary_button_color"))
+                    .foregroundColor(.white)
+                    .cornerRadius(42)
+                }
+            } else {
+                ProgressView()
             }
-            .fontWeight(.semibold)
-            .frame(width: 180)
-            .frame(height: 42)
-            .background(Color("primary_button_color"))
-            .foregroundColor(.white)
-            .cornerRadius(42)
         }
     }
     
