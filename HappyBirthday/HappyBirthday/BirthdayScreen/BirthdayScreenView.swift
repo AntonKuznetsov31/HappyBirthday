@@ -34,6 +34,29 @@ struct BirthdayScreenView: View {
                     backButton
                 }
             }
+            .task {
+                if viewModel.profile.imageData != nil {
+                    renderImageToShare()
+                }
+            }
+    }
+    
+    /// Image rendering for content sharing
+    @MainActor func renderImageToShare() {
+        let size = UIScreen.main.bounds.size
+        let renderer = ImageRenderer(content:
+                                        content(isItToShare: true)
+            .frame(width: size.width, height: size.height)
+            .environment(\.displayScale, displayScale)
+        )
+        
+        renderer.scale = displayScale
+        
+        if let rendered = renderer.uiImage {
+            image = rendered
+        } else {
+            print("Failed to render snapshot")
+        }
     }
     
     /// Main content layout split into top info and bottom image/logo area
@@ -58,6 +81,7 @@ struct BirthdayScreenView: View {
                         .padding(.bottom, 15)
                     logoView
                         .padding(.bottom, 53)
+                    shareButton
                 }
             }
             .frame(maxHeight: .infinity)
@@ -149,6 +173,27 @@ struct BirthdayScreenView: View {
         ), isIconHidden: isIconHidden)
         .padding(.horizontal, 50)
     }
+    
+    /// Sharin screen content button
+    private var shareButton: some View {
+        ShareLink(
+            item: Image(uiImage: image ?? UIImage()),
+            preview: SharePreview(Text("Shared image"), image: Image(uiImage: image ?? UIImage()))
+        ) {
+            HStack {
+                Text("share_button_title".localized)
+                Image("share_button_icon")
+                            .font(.system(size: 16))
+            }
+            .fontWeight(.semibold)
+            .frame(width: 180)
+            .frame(height: 42)
+            .background(Color("primary_button_color"))
+            .foregroundColor(.white)
+            .cornerRadius(42)
+        }
+    }
+    
     
     /// Branding logo at the bottom
     private var logoView: some View {
