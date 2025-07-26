@@ -25,8 +25,15 @@ struct AppEntryPoint: View {
                         .navigationDestination(for: AppRoute.self) { route in
                             switch route {
                             case .birthday(let id):
-                                // TODO: Birthday screen
-                                Text("Birthday Screen")
+                                if let profile = try? modelContext.fetch(FetchDescriptor<BabyProfile>()).first(where: { $0.id == id }) {
+                                    BirthdayScreenView(viewModel: {
+                                        let vm = BirthdayScreenViewModel(profile: profile)
+                                        vm.onBackTapped = { coordinator.pop() }
+                                        return vm
+                                    }())
+                                } else {
+                                    Text("Profile not found")
+                                }
                             }
                         }
                 }

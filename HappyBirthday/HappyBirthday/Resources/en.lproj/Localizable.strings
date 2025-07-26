@@ -24,3 +24,12 @@
 "choose_photo_source" = "Choose Photo Source";
 "camera_title" = "Camera";
 "photo_library_title" = "Photo Library";
+
+// age
+"today_title" = "TODAY %@ IS";
+"age_days_format" = "%d DAY%@ OLD";
+"age_months_format" = "%d MONTH%@ OLD";
+"age_years_format" = "%d YEAR%@ OLD";
+
+// - Birthday screen: -
+"share_button_title" = "Share the news";
