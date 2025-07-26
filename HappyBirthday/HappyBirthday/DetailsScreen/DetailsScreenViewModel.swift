@@ -1,5 +1,5 @@
 //
-//  DetailsViewModel.swift
+//  DetailsScreenViewModel.swift
 //  HappyBirthday
 //
 //  Created by Anton Kuznetsov on 26.07.2025.
@@ -9,9 +9,10 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-@Observable
-final class DetailsViewModel {
+final class DetailsScreenViewModel: ObservableObject {
     var profile: BabyProfile
+    
+    var onShowBirthdayScreenTapped: () -> Void = {}
 
     init(profile: BabyProfile) {
         self.profile = profile

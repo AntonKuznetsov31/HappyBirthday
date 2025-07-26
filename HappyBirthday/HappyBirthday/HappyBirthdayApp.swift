@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct HappyBirthdayApp: App {
+    @StateObject private var appViewModel = AppViewModel()
+
     var body: some Scene {
         WindowGroup {
-            DetailsScreenContainer()
+            AppEntryPoint()
+                .environmentObject(appViewModel)
+                .environmentObject(appViewModel.coordinator)
         }
+        .modelContainer(for: BabyProfile.self)
     }
 }

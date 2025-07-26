@@ -8,33 +8,10 @@
 import SwiftUI
 import SwiftData
 
-struct DetailsScreenContainer: View {
-    @Environment(\.modelContext) private var context
-    @State private var theme: AppColorTheme = .random()
-    
-    var body: some View {
-        Group {
-            let profile = fetchOrCreateProfile()
-            DetailsScreenView(viewModel: DetailsViewModel(profile: profile))
-                .environment(\.birthdayTheme, theme)
-        }
-    }
-    
-    private func fetchOrCreateProfile() -> BabyProfile {
-        if let existing = try? context.fetch(FetchDescriptor<BabyProfile>()).first {
-            return existing
-        } else {
-            let new = BabyProfile(fullName: "", birthday: .now)
-            context.insert(new)
-            return new
-        }
-    }
-}
-
 struct DetailsScreenView: View {
+    @EnvironmentObject private var coordinator: NavigationCoordinator
     @Environment(\.birthdayTheme) private var theme
-    @Bindable var viewModel: DetailsViewModel
-    @State private var isShowingBirthdayScreen = false
+    @ObservedObject var viewModel: DetailsScreenViewModel
     
     @State private var imageToShare: UIImage?
         @State private var isSharing = false
@@ -50,9 +27,6 @@ struct DetailsScreenView: View {
                 showButton
             }
             .padding()
-            .navigationDestination(isPresented: $isShowingBirthdayScreen) {
-                // TODO: - Navigation
-            }
         }
     }
     
@@ -92,7 +66,7 @@ struct DetailsScreenView: View {
     
     private var showButton: some View {
         Button {
-            isShowingBirthdayScreen = true
+            coordinator.push(.birthday(id: viewModel.profile.id))
         } label: {
             Text("show_birthday_screen".localized)
                 .fontWeight(.semibold)
