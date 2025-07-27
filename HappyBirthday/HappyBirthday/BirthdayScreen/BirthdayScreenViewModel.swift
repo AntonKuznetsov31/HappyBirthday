@@ -31,7 +31,7 @@ final class BirthdayScreenViewModel: ObservableObject {
         profile.imageData = data
     }
     
-    /// Title text displayed on the screen, e.g. "Today is Alice's Birthday"
+    /// Title text displayed on the screen, e.g. "Today Alice is ... old"
     var titleText: String {
         String(
             format: NSLocalizedString("today_title", comment: ""),

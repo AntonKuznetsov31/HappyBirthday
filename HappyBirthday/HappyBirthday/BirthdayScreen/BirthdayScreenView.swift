@@ -36,38 +36,50 @@ struct BirthdayScreenView: View {
             }
     }
     
-    /// Main content layout split into top info and bottom image/logo area
+    /// Main content layout
     private func content(isItToShare: Bool) -> some View {
         ZStack {
             theme.backgroundColor
                 .ignoresSafeArea()
             
-            backgroundView
+            ZStack(alignment: .bottom) {
+                backgroundView
+                    .zIndex(1)
+                VStack {
+                    Spacer()
+                    VStack {
+                        titleView
+                            .frame(width: 220)
+                            .padding(.bottom, 13)
+                        swirlsAndDigitView
+                            .padding(.bottom, 14)
+                        subtitleView
+                    }
+                    .padding(.horizontal, 50)
+                    Spacer()
+                    photoPicker(isItToShare)
+                        .padding(.top, 20)
+                        .padding(.bottom, 200)
+                        .zIndex(0)
+                }
+            }
             
             VStack {
+                Spacer()
                 VStack {
-                    titleView
-                        .padding(.bottom, 13)
-                    swirlsAndDigitView
-                    subtitleView
-                        .padding(.top, 14)
-                }
-                .padding(.horizontal, 20)
-                VStack {
-                    photoPicker(isItToShare)
-                        .padding(.bottom, 15)
                     logoView
                         .padding(.bottom, 53)
                     if !isItToShare {
                         shareButton
+                            .padding(.bottom, 53)
                     }
                 }
+                .padding(.horizontal, 50)
             }
-            .frame(maxHeight: .infinity)
-            .padding(.bottom, 53)
         }
     }
     
+    /// Content rendering method
     private func renderShareableContent() {
         viewModel.renderImageToShare(content: content(isItToShare: true), displayScale: displayScale)
     }
@@ -95,7 +107,6 @@ struct BirthdayScreenView: View {
     private var backgroundView: some View {
         GeometryReader { geo in
             VStack {
-                Spacer()
                 Image(theme.backgroundImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -114,7 +125,6 @@ struct BirthdayScreenView: View {
             .lineLimit(2...)
             .truncationMode(.tail)
             .frame(maxWidth: .infinity)
-            .padding(.horizontal, 20)
     }
     
     /// Age digit with decorative swirls left and right
@@ -155,7 +165,6 @@ struct BirthdayScreenView: View {
                 renderShareableContent()
             }
         ), isIconHidden: isIconHidden)
-        .padding(.horizontal, 50)
     }
     
     /// Sharin screen content button
