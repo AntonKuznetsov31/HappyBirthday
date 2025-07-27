@@ -59,6 +59,8 @@ struct PhotoPickerView: View {
         let dy = offset * sin(.pi / 4)
         return CGSize(width: dx - 10, height: -dy + 10)
     }
+    
+    // MARK: - Body
     var body: some View {
         ZStack {
             // Avatar circle
@@ -88,7 +90,7 @@ struct PhotoPickerView: View {
                     Image(theme.cameraIcon)
                         .resizable()
                         .frame(width: iconSize, height: iconSize)
-                        .background(Color.white)
+                        .background(theme.borderColor)
                         .clipShape(Circle())
                 }
                 .offset(iconOffset)

@@ -31,6 +31,7 @@ struct AppEntryPoint: View {
                                         vm.onBackTapped = { coordinator.pop() }
                                         return vm
                                     }())
+                                    .environment(\.birthdayTheme, AppColorTheme.random())
                                 } else {
                                     Text("Profile not found")
                                 }

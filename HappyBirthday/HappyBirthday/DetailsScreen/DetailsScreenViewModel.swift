@@ -10,10 +10,17 @@ import SwiftUI
 import SwiftData
 
 final class DetailsScreenViewModel: ObservableObject {
-    var profile: BabyProfile
+    
+    /// User profile model
+    private var profile: BabyProfile
     
     /// Callback triggered when user taps "Show birthday screen".
     var onShowBirthdayScreenTapped: () -> Void = {}
+    
+    /// User profile ID
+    var profileID: UUID {
+        profile.id
+    }
 
     init(profile: BabyProfile) {
         self.profile = profile

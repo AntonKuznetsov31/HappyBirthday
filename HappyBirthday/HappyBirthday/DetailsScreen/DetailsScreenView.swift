@@ -72,7 +72,7 @@ struct DetailsScreenView: View {
     /// Button that becomes active when form is valid; navigates to the birthday screen
     private var showButton: some View {
         Button {
-            coordinator.push(.birthday(id: viewModel.profile.id))
+            coordinator.push(.birthday(id: viewModel.profileID))
         } label: {
             Text("show_birthday_screen".localized)
                 .fontWeight(.semibold)

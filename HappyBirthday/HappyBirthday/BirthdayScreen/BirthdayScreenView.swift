@@ -10,21 +10,18 @@ import SwiftUI
 
 /// Birthday screen displaying themed congratulations and profile photo.
 struct BirthdayScreenView: View {
-    private var viewModel: BirthdayScreenViewModel
     
-    /// Task requirement: apply a random theme on every screen visit (not persisted)
-    private var theme = AppColorTheme.random()
+    @ObservedObject private var viewModel: BirthdayScreenViewModel
     
-    // Uncomment to use global app theme
-    // @Environment(\.birthdayTheme) private var theme
+    @Environment(\.birthdayTheme) private var theme
     
     @Environment(\.displayScale) var displayScale
-    @State private var image: UIImage?
     
     init(viewModel: BirthdayScreenViewModel) {
         self.viewModel = viewModel
     }
     
+    // MARK: - Body
     var body: some View {
         content(isItToShare: false)
             .navigationBarBackButtonHidden(true)
@@ -35,28 +32,8 @@ struct BirthdayScreenView: View {
                 }
             }
             .task {
-                if viewModel.profile.imageData != nil {
-                    renderImageToShare()
-                }
+                renderShareableContent()
             }
-    }
-    
-    /// Image rendering for content sharing
-    @MainActor func renderImageToShare() {
-        let size = UIScreen.main.bounds.size
-        let renderer = ImageRenderer(content:
-                                        content(isItToShare: true)
-            .frame(width: size.width, height: size.height)
-            .environment(\.displayScale, displayScale)
-        )
-        
-        renderer.scale = displayScale
-        
-        if let rendered = renderer.uiImage {
-            image = rendered
-        } else {
-            print("Failed to render snapshot")
-        }
     }
     
     /// Main content layout split into top info and bottom image/logo area
@@ -89,6 +66,10 @@ struct BirthdayScreenView: View {
             .frame(maxHeight: .infinity)
             .padding(.bottom, 53)
         }
+    }
+    
+    private func renderShareableContent() {
+        viewModel.renderImageToShare(content: content(isItToShare: true), displayScale: displayScale)
     }
     
     // MARK: - UI elements
@@ -164,13 +145,14 @@ struct BirthdayScreenView: View {
     private func photoPicker(_ isIconHidden: Bool) -> some View {
         PhotoPickerView(image: Binding(
             get: {
-                if let data = viewModel.profile.imageData {
+                if let data = viewModel.imageData {
                     return UIImage(data: data)
                 }
                 return nil
             },
             set: { newImage in
-                viewModel.profile.imageData = newImage?.jpegData(compressionQuality: 0.9)
+                viewModel.setImageData(newImage?.jpegData(compressionQuality: 0.9))
+                renderShareableContent()
             }
         ), isIconHidden: isIconHidden)
         .padding(.horizontal, 50)
@@ -179,7 +161,7 @@ struct BirthdayScreenView: View {
     /// Sharin screen content button
     private var shareButton: some View {
         Group {
-            if let image = image {
+            if let image = viewModel.renderedImage {
                 ShareLink(
                     item: Image(uiImage: image),
                     preview: SharePreview(Text("Shared image"), image: Image(uiImage: image))
@@ -196,12 +178,9 @@ struct BirthdayScreenView: View {
                     .foregroundColor(.white)
                     .cornerRadius(42)
                 }
-            } else {
-                ProgressView()
             }
         }
     }
-    
     
     /// Branding logo at the bottom
     private var logoView: some View {
